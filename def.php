@@ -1,6 +1,7 @@
 <?php
 define( "DB_HOST", "localhost" );
-define( "DB_USER", "dbuser" );
-define( "DB_PASS", "ecc" );
-define( "DB_NAME", "studb" );
+define( "DB_USER", "suser" );
+define( "DB_PASS", "safe" );
+define( "DB_NAME", "safety_system" );
 define( "DB_CHARSET", "utf8mb4" );
+

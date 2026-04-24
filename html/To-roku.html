@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>安否登録画面</title>
+    <link rel="stylesheet" href="../css/To-roku.css">
+</head>
+
+<body>
+    <header>
+        <h3>安否登録</h3>
+        <button type="logout" id="logout"onclick location.href="#">ログアウト</button>
+    </header>
+    <main>
+        <form action="/" method="post">
+
+            <div>
+                <p>現在の状況</p>
+                <label><input type="radio" name="damage" id="damage1" value="1">無事</label>
+                <label><input type="radio" name="damage" id="damage2" value="2">軽傷</label>
+                <label><input type="radio" name="damage" id="damage3" value="3">重傷</label>
+
+            </div>
+            <div>
+                <p>勤務可否</p>
+                <label><input type="radio" name="work" id="work1" value="1">勤務可能</label>
+                <label><input type="radio" name="work" id="work2" value="2">勤務不可</label>
+            </div>
+
+            <input type="text" name="Other" id="Other" placeholder="その他連絡事項など">
+
+            <button type="submit" id="submit">送信</button>
+        </form>
+    </main>
+
+</body>
+
+</html>

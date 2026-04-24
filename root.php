@@ -1,4 +1,4 @@
 <?php
 
-define("WEB_ROOT", "http://localhost/SystemDevelop");
+define("WEB_ROOT", "http://localhost/SystemDevelop/");
 

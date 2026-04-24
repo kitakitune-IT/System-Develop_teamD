@@ -1,0 +1,29 @@
+.site-header {
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    position: sticky;
+    top: 0;
+     z-index: 100;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #222;
+}
+
+main {
+    width: 90%;
+    margin: 10px auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
