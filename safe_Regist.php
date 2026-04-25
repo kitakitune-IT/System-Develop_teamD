@@ -40,12 +40,15 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     }catch(PDOException $poe){
     $db ->rollback();
     echo "DB接続エラー\n".$poe->getMessage();
+    header("Location: " . WEB_ROOT . "regist_failed.php");
     }catch(Exception $e){
     $db ->rollback();
-    exit("エラー".$e->getMessage());
+    echo "エラー".$e->getMessage();
+    header("Location: " . WEB_ROOT . "regist_failed.php");
     }catch(Error $e){
     $db ->rollback();
-    exit("エラー".$e->getMessage());
+    echo "エラー".$e->getMessage();
+    header("Location: " . WEB_ROOT . "regist_failed.php");
     }finally{
     $stmt = null;
     $db = null;
@@ -67,7 +70,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 <body>
     <header>
         <h3>安否登録</h3>
-        <button type="logout" id="logout"onclick location.href="./logout.php">ログアウト</button>
+        <a href="./logout.php" id="logout">ログアウト</a>
     </header>
     <main>
         <form action="./safe_Regist.php" method="post">

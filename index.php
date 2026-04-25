@@ -53,6 +53,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     exit("エラー".$e->getMessage());
     }catch(Error $e){
     exit("エラー".$e->getMessage());
+    }finally{
+    $stmt = null;
+    $db = null;
     }
 }
 
