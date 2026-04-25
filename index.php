@@ -36,6 +36,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
         }
         
         session_regenerate_id(true);
+        $_SESSION["emp_id"] = $user["emp_id"];
         $_SESSION["ename"] = $user["ename"];
         $_SESSION["time_limit"] = time()+7200;//2時間後にセッションの有効期限が切れるようにする
         //header("Location: /次のページ.php");

@@ -1,10 +1,11 @@
 <?php
-if(!isset($_SERVER["emp_id"]) || !isset($_SESSION["time_limit"])|| $_SESSION["time_limit"] < time()){
-    header("Location: " . WEB_ROOT . "logout.php");
-    exit;
-}//セッションが存在しないか期限切れの場合はログアウトするように
 require_once __DIR__ . "/root.php";
 require_once __DIR__ . "/def.php";
+session_start();
+if(!isset($_SESSION["emp_id"]) || !isset($_SESSION["time_limit"])|| $_SESSION["time_limit"] < time()){
+    header("Location: " . WEB_ROOT . "logout.php");
+    exit;
+}//セッションが存在しないか期限切れの場合はログアウトページでセッション破壊
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
     try{
@@ -21,35 +22,21 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     ];
     //https://www.php.net/manual/ja/faq.passwords.php#faq.passwords.fasthash
     //パスワードの解析の際にはpassword_verify()を使う必要があるらしい
-    $db ->beginStansaction();
+    $db ->begintransaction();
 
     $sql = "INSERT INTO safety (emp_id, safe, go_office, note) VALUES (:emp_id, :safe, :go_office, :note)";
     $stmt = $db -> prepare($sql);
     $stmt -> execute(["emp_id" => $emp_id, "safe" => $safety["safe"], "go_office" => $safety["go_office"], "note" => $safety["note"]]);
-    if($user && password_verify($_POST["password"], $user["password"])){
 
-
-        $check = session_start([
-            'cookie_httponly' => true,
-            'cookie_secure'   => false,
-        ]);//今は開発であってHTTPSでないのでそっちはfalse、js対策は常時に
-
-        if(!($check)){
-            header("Location: " . WEB_ROOT . "index.php");
-            exit;
-        }
-        
-        session_regenerate_id(true);
-        $_SESSION["user_id"] = $user["id"];
-        $_SESSION["time_limit"] = time()+7200;//2時間後にセッションの有効期限が切れるようにする
-        //header("Location: /次のページ.php");
-        header("Location: " . WEB_ROOT . "success.php");
-    }else{
-        header("Location: " . WEB_ROOT . "fail.php");
-    }
+    $db ->commit();
 
     $stmt = null;
     $db = null;
+
+    header("location:" . WEB_ROOT . "safe_List.php");
+    exit;
+
+
     }catch(PDOException $poe){
     $db ->rollback();
     echo "DB接続エラー\n".$poe->getMessage();
@@ -59,6 +46,9 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     }catch(Error $e){
     $db ->rollback();
     exit("エラー".$e->getMessage());
+    }finally{
+    $stmt = null;
+    $db = null;
     }
 }
 

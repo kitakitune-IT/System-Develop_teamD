@@ -1,16 +1,9 @@
 <?php
 session_start();
-if(!isset($_SESSION["user_id"])){
-    session_destroy();
-    header("Location:./login.php?error=session_not_found");
-    exit;
-    //セッションが存在しない場合はログイン画面に戻す
-}else if($_SESSION["time_limit"] < time()){
-    session_destroy();
-    header("Location:./login.php?error=session_timeout");
+if(!isset($_SESSION["emp_id"]) || !isset($_SESSION["time_limit"])|| $_SESSION["time_limit"] < time()){
+    header("Location: " . WEB_ROOT . "logout.php");
     exit;
 }
-$current_user = $_SESSION["user_id"];
 
     $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
     try{
@@ -18,9 +11,6 @@ $current_user = $_SESSION["user_id"];
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->setAttribute(PDO::ATTR_AUTOCOMMIT,false);
-
-    $db->beginTransaction();
-    $sql = "INSERT INTO safety()";
 
 
 
