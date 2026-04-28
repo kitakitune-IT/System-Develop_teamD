@@ -13,51 +13,33 @@ try{
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->setAttribute(PDO::ATTR_AUTOCOMMIT,false);
-// CREATE TABLE IF NOT EXISTS employee(
-//     emp_id          INT AUTO_INCREMENT,
-//     ename           VARCHAR(50) NOT NULL,
-//     birth           DATE NOT NULL,
-//     tel             VARCHAR(50) NOT NULL,
-//     department      INT NOT NULL,
-//     post            VARCHAR(20) NOT NULL,
-//     administrator   BOOLEAN DEFAULT 0,
-//     password        VARCHAR(255) NOT NULL,
-//     create_id       INT NOT NULL,
-//     create_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     update_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//     PRIMARY KEY(emp_id),
-//     FOREIGN KEY(department) REFERENCES department(d_id),
-//     UNIQUE(tel)
-// );
 
-//     CREATE TABLE IF NOT EXISTS safety(
-//     responce_id INT AUTO_INCREMENT,
-//     emp_id      INT,
-//     safe        BOOLEAN NOT NULL DEFAULT 0,
-//     status      VARCHAR(10) NOT NULL DEFAULT '無事',
-//     go_office   BOOLEAN NOT NULL DEFAULT 0,
-//     note        VARCHAR(255),
-//     create_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//     update_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//     isDelete  BOOLEAN DEFAULT 0,
-//     PRIMARY KEY(responce_id),
-//     FOREIGN KEY(emp_id) REFERENCES employee(emp_id)
-// );テーブルの構造を置いておく
-//必要な情報は、社員ID、社員名(同姓同名がありえるので)、安否、勤務の可否、部署、安否登録日時、更新日時
+    //他の部署の情報を見る権利があるかどうかを判定するブロック。
+    if($_SESSION["is_admin"] === 1 || (isset($_SESSION["post_id"]) && $_SESSION["post_id"] !== 1)){
+        $can_see_other_department = true;
+    }
 
+    if(isset($can_see_other_department)){
+        $limit = "";
+    }else{
+        $limit = " AND e.department =" . $_SESSION["department"];
+    }
 
-    $safety_count;
-    $sql = "SELECT COUNT(*) FROM safety as s JOIN employee as e ON s.emp_id = e.emp_id WHERE s.isDelete = 0";
-    //退社済みでない(社員テーブルに存在する)、かつ論理削除されていないデータの数を調べる
-    //このデータは後で、細かい表示と、ページの切り替えという名の再検索で使う
+    $sql = "SELECT COUNT(*) FROM safety as s JOIN employee as e ON s.emp_id = e.emp_id WHERE s.isDelete = 0" . $limit;
+    //見る権限がある報告の数を調べる
     $stmt = $db -> prepare($sql);
     $stmt -> execute();
     $safety_count = $stmt -> fetchColumn();
     //データが一列であることが確定している時は、fetchColumnを使うと、連想配列ではなくそのままの値で入るから便利なようだ
 
-    $safety_info_list = [];//安否情報のリストを入れる配列。取得した情報から生成した、一行分のHTML要素を格納した配列を格納する、二重配列になる予定
-    $sql = "SELECT s.emp_id,e.ename,s.safe,s.go_office,e.department,DATE_FORMAT(s.create_at,'%Y-%m-%d %H:%i'),DATE_FORMAT(s.update_at,'%Y-%m-%d %H:%i') FROM safety as s JOIN employee as e ON s.emp_id = e.emp_id WHERE s.isDelete = 0";
+    $sql = "SELECT d_id, dname FROM department";
+    $stmt = $db -> prepare($sql);
+    $stmt -> execute();
+    $department_names = $stmt -> fetchALL(PDO::FETCH_ASSOC);
 
+    $safety_info_list = [];//安否情報のリストを入れる配列。取得した情報から生成した、一行分のHTML要素を格納した配列を格納する、二重配列になる予定
+    $sql = "SELECT s.emp_id,e.ename,s.safe,s.can_work,e.department,DATE_FORMAT(s.create_at,'%Y-%m-%d %H:%i'),DATE_FORMAT(s.update_at,'%Y-%m-%d %H:%i') FROM safety as s JOIN employee as e ON s.emp_id = e.emp_id WHERE s.isDelete = 0" . $limit;
+    //退社済でなく、管理者以外は自分と同じ部署のみ取る
     $page = 0;
     if(isset($_GET["page"])){
         $page = (int)$_GET["page"];
@@ -66,20 +48,23 @@ try{
     $start_at = ($page) * $one_page_limit;
     $limit_sql = " LIMIT 20 OFFSET " . ($page * $one_page_limit);
 
-    $querys = [];//検索条件が指定されていた場合は、その条件をWHERE句に追加する必要があるため、それらの情報を格納する配列
+    $querys = [];//検索条件が指定されていた場合は、それらの情報を格納する
+    if(isset($_GET["ename"]) && $_GET["ename"] !== ""){
+        $sql .= " AND e.ename LIKE :ename";
+        $querys[":ename"] = "%" . $_GET["ename"] . "%";
+    }
     if(isset($_GET["safe"]) && $_GET["safe"] !== ""){
         $sql .= " AND s.safe = :safe";
-        $querys[":safe"] = $_GET["safe"];
+        $querys[":safe"] = (int)$_GET["safe"];
     }
     if(isset($_GET["can_work"]) && $_GET["can_work"] !== ""){
-        $sql .= " AND s.go_office = :can_work";
-        $querys[":can_work"] = $_GET["can_work"];
+        $sql .= " AND s.can_work = :can_work";
+        $querys[":can_work"] = (int)$_GET["can_work"];
     }
     if(isset($_GET["department"]) && $_GET["department"] !== ""){
         $sql .= " AND e.department = :department";
-        $querys[":department"] = $_GET["department"];
-    }//この辺では、検索条件が存在して、空でないのなら、sql文に文字結合で条件を追加する処理をしている。
-    //また、executeの際に渡して安全性を高めるために、キーとバリューがそれに対応する形で連想配列に入れている
+        $querys[":department"] = (int)$_GET["department"];
+    }//検索条件が存在して、その中身が空でないのなら、sql文に文字結合で条件を追加する処理をしている
 
     $stmt = $db -> prepare($sql);
     $stmt -> execute($querys);
@@ -87,9 +72,9 @@ try{
     while($row = $stmt -> fetch(PDO::FETCH_ASSOC)){
         $safety_info = "<tr>";
         foreach($row as $key => $value){
-            if($key === "go_office"){
-                $value = $value ? "出社不可" : "出社可";
-            }elseif($key === "safe"){
+            if($key === "can_work"){
+                $value = $value ? "勤務不可" : "勤務可";
+            }else if($key === "safe"){
                 if($value === 0){
                     $value = "無事";
                 }else if($value === 1) {
@@ -98,7 +83,11 @@ try{
                     $value = "重傷";   
                 }
             }
-            $safety_info .= "<td>" . htmlspecialchars($value) . "</td>";
+            if($key === "ename"){
+                $safety_info .= "<td><a href='./safe_Detail.php?id=" . $row["emp_id"] . "'>" . h($value) . "</a></td>";
+            }else{
+                $safety_info .= "<td>" . h($value) . "</td>";
+            }
         }
         $safety_info .= "</tr>";
         $safety_info_list[] = $safety_info;
@@ -156,7 +145,40 @@ try{
      ?>
     </tbody>
 </table>
-<!-- 明日はこれ以降に検索条件の指定と、何ページ目からデータを見るか、の選択肢を記述するフォームを作る -->
+<form action="./safe_List.php" method ="get">
+    <div>
+        <input type="number" name = "emp_id" placeholder="社員IDを指定" value="<?php if(isset($_GET["emp_id"])){echo h($_GET["emp_id"]);} ?>">
+    </div>
+    <div>
+        <input type="text" name="ename" placeholder="社員名" value="<?php if(isset($_GET["ename"])){echo h($_GET["ename"]);} ?>">
+    </div>
+    <div>
+        <select name="safe">
+            <option value="" selected>安否状況を指定</option>
+            <option value="0">無事</option>
+            <option value="1">軽傷</option>
+            <option value="2">重傷</option>
+        </select>
+    </div>
+    <div>
+        <select name = "can_work">
+            <option value="" selected>勤務の可否を指定</option>
+            <option value="0">勤務可</option>
+            <option value="1">勤務不可</option>
+        </select>
+    </div>
+    <?php if(isset($can_see_other_department)): ?>
+    <div>
+        <select name = "department">
+            <option value="" selected>所属部署を指定</option>
+            <?php foreach($department_names as $dep): ?>
+                <option value="<?php echo h($dep["d_id"]); ?>"><?php echo h($dep["dname"]); ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <?php endif; ?>
+    <button type = "submit">この条件で絞り込み</button>
+
 
 
 </div>

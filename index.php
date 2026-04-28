@@ -1,6 +1,16 @@
 <?php
 require_once __DIR__ . "/root.php";
 require_once __DIR__ . "/def.php";
+$check = session_start([
+    'cookie_httponly' => true,
+    'cookie_secure'   => false,
+]);//今は開発であってHTTPSでないのでそっちはfalse、js対策は常時に
+
+if(!($check)){
+    header("Location: " . WEB_ROOT . "index.php");
+    exit;
+}
+
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
     try{
@@ -24,20 +34,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     // $stmt->execute([$user_input["ename"]]);
     // $user = $stmt->fetch();
     if($user && password_verify($user_input["password"], $user["password"])){
-
-        $check = session_start([
-            'cookie_httponly' => true,
-            'cookie_secure'   => false,
-        ]);//今は開発であってHTTPSでないのでそっちはfalse、js対策は常時に
-
-        if(!($check)){
-            header("Location: " . WEB_ROOT . "index.php");
-            exit;
-        }
         
         session_regenerate_id(true);
         $_SESSION["emp_id"] = $user["emp_id"];
-        $_SESSION["ename"] = $user["ename"];
+        $_SESSION["department"] = $user["department"];
+        $_SESSION["post_id"] = $user["post_id"];
+        $_SESSION["is_admin"] = $user["is_admin"];
         $_SESSION["time_limit"] = time()+7200;//2時間後にセッションの有効期限が切れるようにする
         //header("Location: /次のページ.php");
         header("Location: " . WEB_ROOT . "safe_Regist.php");
@@ -56,6 +58,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     }finally{
     $stmt = null;
     $db = null;
+    }
+}else{
+    if(isset($_SESSION["emp_id"]) && isset($_SESSION["time_limit"])&& $_SESSION["time_limit"] >= time()){
+        $_SESSION["time_limit"] = time()+7200;//セッションの有効期限を更新する
+        header("Location: " . WEB_ROOT . "safe_Regist.php");
+        exit;
     }
 }
 
