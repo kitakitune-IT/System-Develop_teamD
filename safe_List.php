@@ -108,6 +108,8 @@ try{
 
 <h1 class="page-title">社員安否一覧画面</h1>
 
+<button><a href="./logout.php">ログアウト</a></button>
+
 <div class="container">
 
     <form action="./safe_List.php" method ="get" class="search">

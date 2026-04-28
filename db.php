@@ -25,8 +25,7 @@ function db_insert($db, $table, $data) {
     return $db->lastInsertId();
 }
 
-function db_update($db, $table, $where, $data){
-    //update テーブル名　set カラム名 = 値
+function db_update($db, $table, $where, $data){//dataはカラム名=>値の連想配列、whereは文字列で条件を指定
     $columns = implode(",", array_keys($data));
     $placeholders = ":" . implode(", :", array_keys($data));
     $sql = "UPDATE $table SET $columns = $placeholders WHERE $where";

@@ -1,3 +1,12 @@
+<?php
+require_once __DIR__ . "/def.php";
+require_once __DIR__ . "/db.php";
+session_start();
+def_session_check();
+
+$ename = $_SESSION["connect_user"]["ename"];
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,22 +20,22 @@
 
 <header>
   <h1>管理者用 メニュー画面</h1>
-  <button class="logout-btn">Logout</button>
+  <button class="logout-btn" ><a href="./logout.php">Logout</a></button>
 </header>
 
 <div class="container">
 
   <div class="top-row">
-    <h2>選ぶ (Select Function)</h2>
-    <span class="admin-name">ログイン中：admin</span>
+    <h2>操作を選択</h2>
+    <span class="admin-name">ログイン中：<?php echo htmlspecialchars($ename); ?></span>
   </div>
 
   <div class="menu">
-    <a href="A.html">
+    <a href="./safe_Regist.php">
       <div class="menu-item">安否登録画面へ</div>
     </a>
 
-    <a href="B.html">
+    <a href="./safe_List.php">
       <div class="menu-item">安否一覧画面へ</div>
     </a>
 
