@@ -60,3 +60,9 @@ textarea {
     border: none;
     border-radius: 10px;
 }
+#text{
+    margin-left: 20px;
+}
+#Other{
+    margin-left: 40px;
+}

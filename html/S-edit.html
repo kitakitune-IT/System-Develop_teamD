@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>社員詳細編集画面</title>
+    <link rel="stylesheet" href="../style/S-edit.css">
+</head>
+
+<body>
+    <header>
+        <h3>社員情報</h3>
+        <button type="logout" id="logout" onclick="location.href='./logout.php'">ログアウト</button>
+    </header>
+    <main>
+        <form action="" method="post">
+            <!-- form -->
+            <div class="card">
+                <P><span>社員番号：</span>0</P>
+            </div>
+            <div class="card">
+                <label>名前：</label><br>
+                <input type="text" name="name" placeholder="山田太郎">
+            </div>
+            <div class="card">
+                <label>生年月日：</label><br>
+                <input type="text" name="birthday" placeholder="2000-01-01">
+            </div>
+            <div class="card">
+                <label>電話番号：</label><br>
+                <input type="text" name="tel" placeholder="000-0000-0000">
+            </div>
+            <div class="card">
+                <label>作成日時：</label><br>
+                <input type="text" name="date" placeholder="2020-01-01">
+            </div>
+            <div class="card">
+                <label>部署：</label><br>
+                <select name="department">
+                    <option value="">営業</option>
+                </select>
+            </div>
+            <div class="card">
+                <label>役職：</label><br>
+                <select name="job">
+                    <option value="">一般社員</option>
+                </select>
+            </div>
+        </form>
+        <div class="action">
+            <button type="submit">保存</button>
+            <!-- form送信 -->
+            <button type="button" onclick="location.href='delete.html'">削除</button>
+        </div>
+    </main>
+
+</body>
+
+</html>

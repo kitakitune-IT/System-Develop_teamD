@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>安否詳細編集画面</title>
+    <link rel="stylesheet" href="../style/edit.css">
+</head>
+
+<body>
+    <header>
+        <h3>安否詳細編集</h3>
+        <button type="logout" id="logout" onclick="location.href='./logout.php'">ログアウト</button>
+    </header>
+    <main>
+        <form action="" method="POST">
+<!--form-->
+        <div class="card">
+            <label>名前：</label><br>
+            <input type="text" name="name" value="山田太郎">
+        </div>
+
+        <div class="card">
+            <label>被害：</label><br>
+            <select name="status">
+                <option value="safe">無事</option>
+                <option value="light">軽傷</option>
+                <option value="heavy">重傷</option>
+            </select>
+        </div>
+        <div class="card">
+            <label>出勤可否：</label><br>
+            <select name="work">
+                <option value="can">可能</option>
+                <option value="can't">不可</option>
+            </select>
+        </div>
+        <div class="card">
+            <label>コメント：</label><br>
+            <textarea name="comment">無事です。いつも通り出勤できます。</textarea>
+        </div>
+        </form>
+        <div class="action">
+            <button type="submit">保存</button>
+            <!-- form送信する -->
+            <button type="button" onclick="location.href='Syo-sai.html'">戻る</button>
+        </div>
+</form>
+    </main>
+
+</body>
+
+</html>

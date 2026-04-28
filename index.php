@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/root.php";
 require_once __DIR__ . "/def.php";
+require_once __DIR__ . "/db.php";
 $check = session_start([
     'cookie_httponly' => true,
     'cookie_secure'   => false,
@@ -11,59 +11,35 @@ if(!($check)){
     exit;
 }
 
-
 if($_SERVER["REQUEST_METHOD"] === "POST"){
     try{
-    $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
-    $db = new PDO($dsn, DB_USER, DB_PASS);
-    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $db->setAttribute(PDO::ATTR_AUTOCOMMIT,false);
+    $db = db_connect();
     $user_input = [
-        "ename" => $_POST["ename"],
+        "emp_id" => $_POST["emp_id"],
         "password" => ($_POST["password"]),
     ];
     //https://www.php.net/manual/ja/faq.passwords.php#faq.passwords.fasthash
-    //パスワードの解析の際にはpassword_verify()を使う必要があるらしい
 
-    $sql = "SELECT * FROM employee WHERE ename = :ename";
-    $stmt = $db -> prepare($sql);
-    $stmt -> execute(["ename" => $user_input["ename"]]);
-    $user = $stmt -> fetch();
-    // $stmt = $db->prepare('SELECT * FROM `employee` WHERE ename = ?');
-    // $stmt->execute([$user_input["ename"]]);
-    // $user = $stmt->fetch();
-    if($user && password_verify($user_input["password"], $user["password"])){
-        
-        session_regenerate_id(true);
-        $_SESSION["emp_id"] = $user["emp_id"];
-        $_SESSION["department"] = $user["department"];
-        $_SESSION["post_id"] = $user["post_id"];
-        $_SESSION["is_admin"] = $user["is_admin"];
-        $_SESSION["time_limit"] = time()+7200;//2時間後にセッションの有効期限が切れるようにする
-        //header("Location: /次のページ.php");
+    $login_success = db_login($db, $user_input);
+    //$_SESSION["connect_user"]に、ユーザーのデータが入っている
+    //$_SESSION["connection_time_limit"]で有効期限を管理する
+    if($login_success){
+        if(isset($_SESSION["administrator"]) && $_SESSION["administrator"] === 1){
+            header("Location: " . WEB_ROOT . "admin_menu.php");
+            exit;
+        }
         header("Location: " . WEB_ROOT . "safe_Regist.php");
+        exit;
     }else{
         header("Location: " . WEB_ROOT . "failed.php");
+        exit;
     }
 
-    $stmt = null;
-    $db = null;
-    }catch(PDOException $poe){
-    exit("DBエラー".$poe->getMessage());
     }catch(Exception $e){
-    exit("エラー".$e->getMessage());
-    }catch(Error $e){
     exit("エラー".$e->getMessage());
     }finally{
     $stmt = null;
     $db = null;
-    }
-}else{
-    if(isset($_SESSION["emp_id"]) && isset($_SESSION["time_limit"])&& $_SESSION["time_limit"] >= time()){
-        $_SESSION["time_limit"] = time()+7200;//セッションの有効期限を更新する
-        header("Location: " . WEB_ROOT . "safe_Regist.php");
-        exit;
     }
 }
 
@@ -87,27 +63,31 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 </header>
 
 <main>
-    <div class="desc-wrap">
-        <div class="description">
-            <h2 class="item-name">X社ログイン画面</h2>
-
-            <div class="materials">
-                <form action="./index.php" method="post">
-                    <li>
-                        <input type="text" name="ename" placeholder="社員ID">
-                    </li>
-                    <li>
-                        <input type="password" name="password"placeholder="パスワード">
-                    </li>
-                    <li>
-                        <button type="submit">ログイン</button> 
-                        </a>
-                    </li>
-                </form>
+    <?php if (isset($_SESSION["connect_user"])): ?>
+        <div class="induction">
+            <p class="item-name">既にログインしています！</p>
+            <div class="induction ">
+                <a class="btn-link" href="./safe_Regist.php">安否登録画面へ</a>
+                <br>
+                <a class="btn-link btn-link-secondary" href="./logout.php">ログアウト</a>
             </div>
-
         </div>
+    <?php else: ?>
+        <div class="materials">
+            <form action="./index.php" method="post">
+                <div class = "user-input">
+                    <input type="text" name="emp_id" placeholder="社員ID">
+                </div>
+                <div class = "user-input">
+                    <input type="password" name="password"placeholder="パスワード">
+                </div>
+                <div class = "btn">
+                    <button type="submit">ログイン</button> 
+                </div>
+            </form>
     </div>
+    
+    <?php endif; ?>
 </main>
 
 </body>

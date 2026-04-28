@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>安否登録画面</title>
+    <link rel="stylesheet" href="../style/To-roku.css">
+</head>
+
+<body>
+    <header>
+        <h3>安否登録</h3>
+        <button type="button" id="logout" onclick="location.href='./logout.php'">ログアウト</button>
+    </header>
+    <main>
+        <form action="/" method="post">
+            <!-- form -->
+
+            <div>
+                <p>安否情報を選択してください。</p>
+                <label><input type="radio" name="damage" id="damage1" value="1">無事</label>
+                <label><input type="radio" name="damage" id="damage2" value="2">軽傷</label>
+                <label><input type="radio" name="damage" id="damage3" value="3">重傷</label>
+
+            </div>
+            <div>
+                <p>勤務が可能か選択してください。</p>
+                <label><input type="radio" name="work" id="work1" value="1">勤務可能</label>
+                <label><input type="radio" name="work" id="work2" value="2">勤務不可</label>
+            </div>
+            <div>
+                <p>現在地を選択してください。</p>
+                <label><input type="radio" name="where" id="where1" value="1">自宅</label>
+                <label><input type="radio" name="where" id="where2" value="2">避難所</label>
+                <label id="text">その他<input type="text" name="where" id="" placeholder="現在地を入力して下さい。"></label>
+            </div>
+
+            <input type="text" name="Other" id="Other" placeholder="その他連絡事項など">
+
+            <button type="submit" id="submit">送信</button>
+            <!-- form送信 -->
+        </form>
+    </main>
+
+</body>
+
+</html>
