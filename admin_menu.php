@@ -4,7 +4,15 @@ require_once __DIR__ . "/db.php";
 session_start();
 def_session_check();
 
+if(!isset($_SESSION["connect_user"]["administrator"]) || $_SESSION["connect_user"]["administrator"] != 1){
+    header("Location: " . WEB_ROOT . "logout.php");
+    exit;
+}
+
+
 $ename = $_SESSION["connect_user"]["ename"];
+
+
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +47,7 @@ $ename = $_SESSION["connect_user"]["ename"];
       <div class="menu-item">安否一覧画面へ</div>
     </a>
 
-    <a href="C.html">
+    <a href="employee_List.php">
       <div class="menu-item">社員一覧画面へ</div>
     </a>
 

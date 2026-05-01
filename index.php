@@ -24,7 +24,7 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     //$_SESSION["connect_user"]に、ユーザーのデータが入っている
     //$_SESSION["connection_time_limit"]で有効期限を管理する
     if($login_success){
-        if(isset($_SESSION["connect_user"]["administrator"]) && $_SESSION["connect_user"]["administrator"] === 1){
+        if(isset($_SESSION["connect_user"]["administrator"]) && $_SESSION["connect_user"]["administrator"] == 1){
             header("Location: " . WEB_ROOT . "admin_menu.php");
             exit;
         }

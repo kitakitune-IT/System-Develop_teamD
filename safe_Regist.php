@@ -7,7 +7,9 @@ def_session_check();
 if($_SERVER["REQUEST_METHOD"] === "GET"){
     $_SESSION["user_have_to_Regist"] = true;
     $db = db_connect();
-    $sql = "SELECT * FROM safety WHERE emp_id = :emp_id AND isDelete = 0";
+    $sql = "SELECT * FROM safety 
+            WHERE emp_id = :emp_id 
+            AND isDelete = 0";
     $stmt = db_query($db, $sql, [":emp_id" => $_SESSION["connect_user"]["emp_id"]]);
     $result = $stmt -> fetch(PDO::FETCH_ASSOC);
     if($result){
@@ -22,6 +24,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
     if(!isset($_POST["csrf_token"]) || $_POST["csrf_token"] !== $_SESSION["csrf_token"]){
         throw new csrfException("正しいリクエストではありません");
     }
+    unset($_SESSION["csrf_token"]);
 
     $db = db_connect();
 
@@ -37,6 +40,8 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
     db_insert($db, "safety", $Regist_data);
 
     $db ->commit();
+
+    unset($_SERVER["csrf_token"]);
 
     $db = null;
 

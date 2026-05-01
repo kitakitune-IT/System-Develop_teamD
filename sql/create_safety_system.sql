@@ -9,7 +9,7 @@ CREATE DATABASE safety_system;
 GRANT ALL ON safety_system.* TO suser;
 
 USE safety_system;
-source systemdev/safesystem_table_with_hash.sql;
+source systemdev/newsafesystem_table.sql;
 
 SELECT * FROM employee;
 SELECT * FROM safety;

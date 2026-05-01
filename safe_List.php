@@ -8,14 +8,14 @@ try{
     $db = db_connect();
 
     //他の部署の情報を見る権利があるかどうかを判定するブロック。
-    if($_SESSION["connect_user"]["administrator"] === 1 || (isset($_SESSION["connect_user"]["post_id"]) && $_SESSION["connect_user"]["post_id"] !== 1)){
+    if($_SESSION["connect_user"]["administrator"] == 1 || (isset($_SESSION["connect_user"]["p_id"]) && $_SESSION["connect_user"]["p_id"] != 1)){
         $can_see_other_department = true;
     }
 
     if(isset($can_see_other_department)){
         $limit = "";
     }else{
-        $limit = " AND e.department =" . $_SESSION["connect_user"]["department"];
+        $limit = " AND e.d_id =" . $_SESSION["connect_user"]["d_id"];
     }
 
     $sql = "SELECT COUNT(*) FROM safety as s JOIN employee as e ON s.emp_id = e.emp_id WHERE s.isDelete = 0" . $limit;
@@ -27,7 +27,10 @@ try{
     $department_names = $stmt -> fetchALL(PDO::FETCH_ASSOC);
 
     $safety_info_list = [];//安否情報のリストを入れる配列。取得した情報から生成した、一行分のHTML要素を格納した配列を格納する、二重配列になる予定
-    $sql = "SELECT s.responce_id, s.emp_id,e.ename,s.safe,s.can_work,d.dname,DATE_FORMAT(s.create_at,'%Y-%m-%d %H:%i'),DATE_FORMAT(s.update_at,'%Y-%m-%d %H:%i') FROM safety as s JOIN employee as e ON s.emp_id = e.emp_id JOIN department as d ON e.department = d.d_id WHERE s.isDelete = 0" . $limit;
+    $sql = "SELECT s.responce_id, s.emp_id,e.ename,s.safe,s.can_work,d.dname,DATE_FORMAT(s.create_at,'%Y-%m-%d %H:%i'),DATE_FORMAT(s.update_at,'%Y-%m-%d %H:%i') FROM safety as s
+            JOIN employee as e ON s.emp_id = e.emp_id 
+            JOIN department as d ON e.d_id = d.d_id 
+            WHERE s.isDelete = 0" . $limit;
     $page = 0;
     if(isset($_GET["page"])){
         $page = (int)$_GET["page"];
@@ -50,7 +53,7 @@ try{
         $querys[":can_work"] = (int)$_GET["can_work"];
     }
     if(isset($_GET["department"]) && $_GET["department"] !== ""){
-        $sql .= " AND e.department = :department";
+        $sql .= " AND e.d_id = :department";
         $querys[":department"] = (int)$_GET["department"];
     }
     $sql .= $limit_sql;
@@ -64,15 +67,15 @@ try{
                 $value = $value ? "勤務不可" : "勤務可";
             }
             if($key === "safe"){
-                if($value === 0){
+                if($value == 0){
                     $safety_info .= "<td class='ok'>無事</td>";
-                }else if($value === 1) {
+                }else if($value == 1) {
                     $safety_info .= "<td class='injury'>軽傷</td>";
-                }else if($value === 2) {
+                }else if($value == 2) {
                     $safety_info .= "<td class='danger'>重傷</td>";
                 }
             }else if($key === "ename"){
-                $safety_info .= "<td><a href='./safe_Detail.php?id=" . $row["responce_id"] . "'>" . h($value) . "</a></td>";
+                $safety_info .= "<td><a href='./safe_Detail.php?responce_id=" . $row["responce_id"] . "'>" . h($value) . "</a></td>";
             }else{
                 $safety_info .= "<td>" . h($value) . "</td>";
             }

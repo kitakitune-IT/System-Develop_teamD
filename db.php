@@ -5,7 +5,7 @@ function db_connect() {
     $db = new PDO($dsn, DB_USER, DB_PASS);
     $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $db->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
+    $db->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
     return $db;
 }
 
@@ -26,9 +26,12 @@ function db_insert($db, $table, $data) {
 }
 
 function db_update($db, $table, $where, $data){//dataはカラム名=>値の連想配列、whereは文字列で条件を指定
-    $columns = implode(",", array_keys($data));
-    $placeholders = ":" . implode(", :", array_keys($data));
-    $sql = "UPDATE $table SET $columns = $placeholders WHERE $where";
+    $set_parts = [];
+    foreach(array_keys($data) as $key){
+        $set_parts[] = "$key = :$key";
+    }
+    $columns = implode(", ", $set_parts);
+    $sql = "UPDATE $table SET $columns WHERE $where";
     $stmt = $db->prepare($sql);
     $stmt->execute($data);
 }
