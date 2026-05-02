@@ -3,6 +3,7 @@ require_once __DIR__ . "/def.php";
 require_once __DIR__ . "/db.php";
 session_start();
 def_session_check();
+$user_id_admin = admin_check();
 
 if($_SERVER["REQUEST_METHOD"] === "GET"){
     $_SESSION["user_have_to_Regist"] = true;
@@ -83,6 +84,9 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
 <body>
     <header>
         <h3>安否登録</h3>
+        <?php if($user_id_admin): ?>
+        <a href="./admin_menu.php">管理者用画面へ</a>
+        <?php endif; ?>
         <a href="./logout.php" id="logout">ログアウト</a>
     </header>
     <main>

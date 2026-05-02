@@ -116,9 +116,9 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
         <div class="card">
             <label>現在の状況：</label><br>
             <select name="safe">
-                <option value="1">無事</option>
-                <option value="2">軽傷</option>
-                <option value="3">重傷</option>
+                <option value="0">無事</option>
+                <option value="1">軽傷</option>
+                <option value="2">重傷</option>
             </select>
         </div>
         <div class="card">
@@ -135,7 +135,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
         <div class="action">
             <button type="submit">保存</button>
             <!-- form送信する -->
-            <button type="button" onclick="location.href='./safe_List.php'">戻る</button>
+            <button type="button" onclick="location.href='./safe_Detail.php?responce_id=<?php echo $_GET["responce_id"] ?>'">戻る</button>
         </div>
         </form>
     </main>

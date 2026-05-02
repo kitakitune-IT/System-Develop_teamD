@@ -3,6 +3,7 @@ require_once __DIR__ . "/def.php";
 require_once __DIR__ . "/db.php";
 session_start();
 def_session_check();
+$user_id_admin = admin_check();
 
 if(!isset($_GET["responce_id"])){
     header("Location: " . WEB_ROOT . "safe_List.php");
@@ -29,7 +30,7 @@ try{
 
     $responce_id = $result["responce_id"];
 
-    if($_SESSION["connect_user"]["administrator"] == 1 || (isset($_SESSION["connect_user"]["p_id"]) && $_SESSION["connect_user"]["p_id"] != 1)){
+    if($user_id_admin || (isset($_SESSION["connect_user"]["p_id"]) && $_SESSION["connect_user"]["p_id"] != 1)){
         $can_see_this_data = true;
     }else{
         if($result["d_id"] == $_SESSION["connect_user"]["d_id"]){
@@ -79,6 +80,9 @@ try{
 <body>
     <header>
         <h3>安否詳細</h3>
+        <?php if($user_id_admin) : ?>
+            <button onclick="location.href='./admin_menu.php'">管理者用画面へ</button>
+        <?php endif ; ?>
         <button id="logout" onclick="location.href='./logout.php'">ログアウト</button>
     </header>
     <main>

@@ -28,3 +28,13 @@ function def_session_check(){
         return true;
     }
 }
+
+function admin_check(){
+    if(!isset($_SESSION["connect_user"]["administrator"]))return false;
+    
+    if($_SESSION["connect_user"]["administrator"] == 1){
+        return true;
+    }else{
+        return false;
+    }
+}

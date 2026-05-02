@@ -3,12 +3,13 @@ require_once __DIR__ . "/def.php";
 require_once __DIR__ . "/db.php";
 session_start();
 def_session_check();
+$user_id_admin = admin_check();
 
 try{
     $db = db_connect();
 
     //他の部署の情報を見る権利があるかどうかを判定するブロック。
-    if($_SESSION["connect_user"]["administrator"] == 1 || (isset($_SESSION["connect_user"]["p_id"]) && $_SESSION["connect_user"]["p_id"] != 1)){
+    if($user_id_admin || (isset($_SESSION["connect_user"]["p_id"]) && $_SESSION["connect_user"]["p_id"] != 1)){
         $can_see_other_department = true;
     }
 
@@ -111,6 +112,9 @@ try{
 
 <h1 class="page-title">社員安否一覧画面</h1>
 
+<?php if($user_id_admin) : ?>
+    <button><a href="./admin_menu.php">管理者用画面へ</a></button>
+<?php endif ;?>
 <button><a href="./logout.php">ログアウト</a></button>
 
 <div class="container">

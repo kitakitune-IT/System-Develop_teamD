@@ -3,8 +3,9 @@ require_once __DIR__ . "/def.php";
 require_once __DIR__ . "/db.php";
 session_start();
 def_session_check();
+$user_id_admin = admin_check();
 
-if(!isset($_SESSION["connect_user"]["administrator"]) || $_SESSION["connect_user"]["administrator"] != 1){
+if(!$user_id_admin){
     header("Location: " . WEB_ROOT . "logout.php");
     exit;
 }
