@@ -13,7 +13,7 @@ if(!$user_id_admin){
 try{
     $db = db_connect();
 
-    // 部署名や役職名が追加されても対応できるように値を取得
+    // 検索フォーム用のマスタデータ取得
     $sql_dep = "SELECT d_id, dname FROM department";
     $stmt_dep = db_query($db, $sql_dep);
     $department_List = $stmt_dep -> fetchAll(PDO::FETCH_ASSOC);
@@ -22,7 +22,7 @@ try{
     $stmt_post = db_query($db, $sql_post);
     $post_List = $stmt_post -> fetchAll(PDO::FETCH_ASSOC);
 
-    // 社員一覧の基本SQL
+    // 社員一覧のベースSQL
     $sql = "SELECT e.emp_id, e.ename, e.birth, e.tel, d.dname, p.pname, 
     CASE WHEN e.administrator = 1 THEN '管理者'
     ELSE '一般'
@@ -104,6 +104,11 @@ try{
 <header>
   <h1>社員一覧画面</h1>
   <div class="top-buttons">
+    <?php if($user_id_admin) :?>
+      <button class="btn" onclick="location.href='./admin_menu.php'">
+        管理者用画面へ
+      </button>
+    <?php endif ;?>
     <button class="btn" onclick="location.href='./employee_Regist.php'">新規社員登録</button>
     <button class="btn logout" onclick="location.href='./logout.php'">LOG OUT</button>
   </div>
