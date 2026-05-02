@@ -28,7 +28,7 @@ try{
         $emp_id = $emp_fetch_result["emp_id"];
         foreach($emp_fetch_result as $column => $value){
             if($column == "ename"){
-              $emp_data .= "<td><a href='employee_Datail.php?emp_id=" . $emp_id . "'>" . h($value) . "</a></td>";
+              $emp_data .= "<td><a href='employee_Detail.php?emp_id=" . $emp_id . "'>" . h($value) . "</a></td>";
             }else{
               $emp_data .= "<td>" . h($value) . "</td>";
             }
@@ -71,8 +71,13 @@ try{
 <header>
   <h1>社員一覧画面</h1>
   <div class="top-buttons">
-    <button class="btn">新規社員登録</button>
-    <button class="btn logout">LOG OUT</button>
+    <?php if($user_id_admin) :?>
+      <button class="btn" onclick="location.href='./admin_menu.php'">
+        管理者用画面へ
+      </button>
+    <?php endif ;?>
+    <button class="btn" onclick="location.href='./employee_Regist.php'">新規社員登録</button>
+    <button class="btn logout" onclick="location.href='./logout.php'">LOG OUT</button>
   </div>
 </header>
 

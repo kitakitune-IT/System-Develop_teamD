@@ -52,8 +52,9 @@ $ename = $_SESSION["connect_user"]["ename"];
       <div class="menu-item">社員一覧画面へ</div>
     </a>
 
-    <a href="D.html">
-      <div class="menu-item">安否情報削除画面へ</div>
+    <a href="#">
+      <div class="menu-item">(未作成)</div>
+      <!-- 安否情報削除画面 -->
     </a>
   </div>
 

@@ -10,8 +10,6 @@ if(!isset($_GET["responce_id"])){
     echo "レスポンスIDが指定されていません。";
     exit;
 }
-//作るべき機能
-
 
 try{
     $db = db_connect();
@@ -88,9 +86,9 @@ try{
     <main>
 
         <div class="card">
-            <p><span>名前：</span><?php echo htmlspecialchars($result["ename"]); ?></p>
-            <p><span>安否：</span><?php echo htmlspecialchars($result["safe"]); ?></p>
-            <p><span>出勤可否：</span><?php echo htmlspecialchars($result["can_work"]); ?></p>
+            <p><span>名前：</span><?php echo h($result["ename"]); ?></p>
+            <p><span>安否：</span><?php echo h($result["safe"]); ?></p>
+            <p><span>出勤可否：</span><?php echo h($result["can_work"]); ?></p>
             <p>
                 <span>コメント：</span>
                  <?php echo ($result['note'] == null || $result['note'] === '') ? 'コメントはありません' : h($result['note']); ?>
@@ -99,7 +97,7 @@ try{
 
         <div class="action">
             <?php if(isset($user_can_edit) && $user_can_edit): ?>
-            <button onclick="location.href='./safe_Edit.php?responce_id=<?php echo htmlspecialchars($responce_id); ?>'">編集</button>
+            <button onclick="location.href='./safe_Edit.php?responce_id=<?php echo h($responce_id); ?>'">編集</button>
             <?php endif; ?>
             <button onclick="location.href='./safe_List.php'">戻る</button>
             <!-- /ここで社員安否一覧画面に戻る -->
