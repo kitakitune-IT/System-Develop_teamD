@@ -152,7 +152,9 @@ try{
         </div>
         <?php endif; ?>
         <button type = "submit">この条件で絞り込み</button>
+        <button onclick="location.href='./safe_List.php'">リセット</button>
     </form>
+
 
 <table>
     <thead>
