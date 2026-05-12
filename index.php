@@ -6,9 +6,13 @@ $check = session_start([
     'cookie_secure'   => false,
 ]);//今は開発であってHTTPSでないのでそっちはfalse、js対策は常時に
 
+
 if(!($check)){
     header("Location: " . WEB_ROOT . "index.php");
     exit;
+}
+if(isset($_SESSION["connection_time_limit"]) && $_SESSION["connection_time_limit"] < time()){
+    session_destroy();
 }
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){

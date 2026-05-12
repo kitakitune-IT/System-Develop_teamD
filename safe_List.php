@@ -41,6 +41,10 @@ try{
     $limit_sql = " LIMIT 20 OFFSET " . ($page * $one_page_limit);
 
     $querys = [];//検索条件が指定されていた場合は、それらの情報を格納する
+    if(isset($_GET["emp_id"]) && $_GET["emp_id"] !== ""){
+        $sql .= " AND e.emp_id = :emp_id";
+        $querys[":emp_id"] = $_GET["emp_id"];
+    }
     if(isset($_GET["ename"]) && $_GET["ename"] !== ""){
         $sql .= " AND e.ename LIKE :ename";
         $querys[":ename"] = "%" . $_GET["ename"] . "%";
@@ -152,7 +156,7 @@ try{
         </div>
         <?php endif; ?>
         <button type = "submit">この条件で絞り込み</button>
-        <button onclick="location.href='./safe_List.php'">リセット</button>
+        <button type = "button" onclick="location.href='./safe_List.php'">リセット</button>
     </form>
 
 

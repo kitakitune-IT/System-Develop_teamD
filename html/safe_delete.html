@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安否情報削除画面</title>
+
+</head>
+<body>
+  <!-- 戻るボタン -->
+  <button type ="button" onclick="location.href='./admin_menu.php'">戻る</button>
+
+  <!-- ログアウトボタン -->
+  <button type="button" onclick="location.href='./logout.php'">ログアウト</button>
+
+    <h1>安否情報削除画面</h1>
+
+    <!-- 全選択・全解除 -->
+    <p>
+      <input type="button" value="全て選択" onclick="allcheck(true);">
+      <input type="button" value="全て解除" onclick="allcheck(false);">
+    </p>
+
+    <form name="sampleform">
+    <table border="1">
+    <tr>
+      <th>選択</th>
+      <th>名前</th>
+      <th>所属部署</th>
+      <th>安否</th>
+      <th>報告日時</th>
+    </tr>
+    <tr>
+      <tr onclick="trClick(0)"></tr>
+        <td><input id="chkbox0" type="checkbox"/></td>
+      <td>佐藤</td>
+      <td>経理</td>
+      <td>無事</td>
+      <td>〇〇</td>
+    </tr>
+    <tr>
+      <tr onclick="trClick(1)"></tr>
+        <td><input id="chkbox1" type="checkbox"/></td>
+      <td>田中</td>
+      <td>人事</td>
+      <td>重傷</td>
+      <td>△△</td>
+    </tr>
+    <tr>
+      <tr onclick="trClick(2)"></tr>
+        <td><input id="chkbox2" type="checkbox"/></td>
+      <td>山田</td>
+      <td>総務</td>
+      <td>軽傷</td>
+      <td>▢▢</td>
+    </tr>
+
+    <form action="{{ route('spending.destroy', ['spending' => $spending['id']]) }}" method="post">
+    <button type="submit" class="btn btn-danger ml-5" onclick="return confirm('本当に削除しても良いですか？');">削除</button>
+    </form>
+
+
+  </table>
+  </form>
+  <script src="safe_delete.js"></script>
+</body>
+</html>

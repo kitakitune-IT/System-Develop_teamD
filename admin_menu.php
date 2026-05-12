@@ -48,13 +48,12 @@ $ename = $_SESSION["connect_user"]["ename"];
       <div class="menu-item">安否一覧画面へ</div>
     </a>
 
-    <a href="employee_List.php">
+    <a href="./employee_List.php">
       <div class="menu-item">社員一覧画面へ</div>
     </a>
 
-    <a href="#">
-      <div class="menu-item">(未作成)</div>
-      <!-- 安否情報削除画面 -->
+    <a href="./safe_Delete.php">
+      <div class="menu-item">安否情報削除画面へ</div>
     </a>
   </div>
 
