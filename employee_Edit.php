@@ -89,7 +89,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
             "create_id" => $_SESSION["connect_user"]["emp_id"] // 最終編集者のIDを更新
         ];
 
-        db_update($db, "employee", "emp_id = " . intval($emp_id), $update_data);
+        db_update($db,"employee", $update_data, "emp_id = :emp_id",  [":emp_id" => $emp_id]);
         
         $db->commit();
 

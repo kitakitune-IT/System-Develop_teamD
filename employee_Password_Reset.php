@@ -62,7 +62,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
             "create_id" => $_SESSION["connect_user"]["emp_id"]
         ];
 
-        db_update($db, "employee", "emp_id = " . intval($emp_id), $update_data);
+        db_update($db, "employee",$update_data, "emp_id = :emp_id",  [":emp_id" => $emp_id]);
         
         $db->commit();
         $db = null;

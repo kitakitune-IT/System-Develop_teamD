@@ -64,7 +64,7 @@ if($_SERVER["REQUEST_METHOD"] === "GET"){
         ];
 
         // SQLインジェクションを考慮し、intvalでキャストしてWHEREに直接渡す
-        db_update($db, "safety", "responce_id = " . intval($responce_id), $update_data);
+        db_update($db, "safety",$update_data, "responce_id = :responce_id",  [":responce_id" => $responce_id]);
         
         $db -> commit();
 

@@ -36,7 +36,7 @@ $ename = $_SESSION["connect_user"]["ename"];
 
   <div class="top-row">
     <h2>操作を選択</h2>
-    <span class="admin-name">ログイン中：<?php echo htmlspecialchars($ename); ?></span>
+    <span class="admin-name">ログイン中：<?php echo h($ename); ?></span>
   </div>
 
   <div class="menu">

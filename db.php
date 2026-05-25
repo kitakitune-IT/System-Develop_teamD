@@ -25,15 +25,18 @@ function db_insert($db, $table, $data) {
     return $db->lastInsertId();
 }
 
-function db_update($db, $table, $where, $data){//dataはカラム名=>値の連想配列、whereは文字列で条件を指定
+function db_update($db, $table, $data,$where_clause, $where_params = [] ){
+//dataはカラム名=>値の連想配列
+// where_paramsはプレースホルダに入れるため、[":column" => value]の形式の連想配列
+//where_clauseは、値を入れる場所だけを:columnの形式で置き換えたwhere句をそのまま文字列で渡す
     $set_parts = [];
     foreach(array_keys($data) as $key){
         $set_parts[] = "$key = :$key";
     }
     $columns = implode(", ", $set_parts);
-    $sql = "UPDATE $table SET $columns WHERE $where";
+    $sql = "UPDATE $table SET $columns WHERE $where_clause";
     $stmt = $db->prepare($sql);
-    $stmt->execute($data);
+    $stmt->execute(array_merge($data, $where_params));
 }
 
 //function db_delete($db, $table, $where):void{
